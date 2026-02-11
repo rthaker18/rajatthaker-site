@@ -6,14 +6,14 @@ Goal:
 Request metadata:
 - Source: issue_opened
 - Requested by: rthaker18
-- Issue: #19
-- Issue URL: https://github.com/rthaker18/rajatthaker-site/issues/19
-- Issue title: Change Front a page
+- Issue: #21
+- Issue URL: https://github.com/rthaker18/rajatthaker-site/issues/21
+- Issue title: Styling and How It Works Tab
 
 Requested change:
-Change Front a page
+Styling and How It Works Tab
 
-/change the whole front page to remove the template provided by next js and instead replace it with a header "Welcome to Rajat Thaker's website!" and a hyperlink under that to my linkedin like: [LinkedIn](https://linkedin.com/in/rthaker2)
+/change add some styling to the front page and add another tab that's called "How it Works" which contains information about how I use coded to automatically update this website and a link to this repo on github.com
 
 Execution requirements:
 1) Make the smallest safe change that satisfies the request.
