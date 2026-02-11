@@ -110,20 +110,20 @@ jobs:
       - name: Run Codex to implement request
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          OPENAI_TOKEN: ${{ secrets.OPENAI_API_KEY }}
-          OPENAI_KEY: ${{ secrets.OPENAI_API_KEY }}
-          OPENAI_AUTH_TOKEN: ${{ secrets.OPENAI_API_KEY }}
         run: |
           npm install -g @openai/codex
 
           git checkout -b "${{ steps.branch.outputs.branch }}"
+
+          # Keep auth source unambiguous for Codex CLI.
+          unset OPENAI_TOKEN OPENAI_KEY OPENAI_AUTH_TOKEN || true
+          export OPENAI_API_KEY
 
           codex exec \
             --skip-git-repo-check \
             --full-auto \
             --model gpt-5.2-codex \
             "$(cat codex-request.md)"
-
       - name: Run lint
         run: |
           if [ -f package.json ]; then
