@@ -78,6 +78,7 @@ jobs:
               repo: context.repo.repo,
               event_type: 'codex_change_requested',
               client_payload: {
+                source: 'issue_comment',
                 issue_number: issue.number,
                 issue_title: issue.title,
                 issue_url: issue.html_url,
