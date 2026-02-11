@@ -6,14 +6,44 @@ Goal:
 Request metadata:
 - Source: issue_opened
 - Requested by: rthaker18
-- Issue: #21
-- Issue URL: https://github.com/rthaker18/rajatthaker-site/issues/21
-- Issue title: Styling and How It Works Tab
+- Issue: #25
+- Issue URL: https://github.com/rthaker18/rajatthaker-site/issues/25
+- Issue title: Update Resume
 
 Requested change:
-Styling and How It Works Tab
+Update Resume
 
-/change add some styling to the front page and add another tab that's called "How it Works" which contains information about how I use coded to automatically update this website and a link to this repo on github.com
+add this to the bottom of the resume and move the resume to a new tab with a little "last updated" line:
+
+Software Engineer, Android Auto & Embedded Systems	March 2022 - January 2023
+Google	Mountain View, CA
+Built fleet management infrastructure for Android Auto policy enforcement across distributed systems for 3 major car rental agencies managing 50,000+ connected vehicles
+	
+PROJECTS
+SWE-Bench Code Repair with DPO
+Implemented supervised fine-tuning + Direct Preference Optimization pipeline for code generation, fine-tuning Qwen 2.5 Coder on 700+ SWE-Bench Pro examples from Scale AI’s public dataset
+Identified and debugged structured output format issues in model generation
+Tech: PyTorch, Transformers, PEFT/LoRA, TRL, Hugging Face
+Links: github.com/rthaker18/swe_bench_sft_dpo | huggingface.co/rahjeetee/swe-patch-sft 
+		
+TECHNICAL SKILLS
+
+Languages: Python, C++, Java, SQL, Go
+ML/AI: PyTorch, Vertex AI, Transformers (Hugging Face), RAG Engine, Prompt Engineering, PEFT/LoRA, TRL
+Infrastructure: Apache Beam, Protocol Buffers, gRPC, Git, Cloud Spanner, BigQuery, Kubernetes
+	
+AWARDS AND LEADERSHIP EXPERIENCE
+
+Speaker, Health & Home AI Summit (2024) — "Building AI-Enabled Developer Tools at Scale" (500+ attendees)
+Speaker, BAGEL 2025 (Google/DeepMind AI Conference) — "Resilient AI Agents for Production Triage Systems" (300+ attendees)
+Nominee, Google SWEETY Awards (Software Engineering Excellence)
+	
+EDUCATION
+
+University of Illinois at Urbana-Champaign	December 2021
+B.S., Computer Engineering	
+James Scholar, Dean’s List 2019 Recipient		      
+Relevant Coursework: Computer Architecture (ECE 411), Artificial Intelligence (CS 440), Parallel Programming (ECE 408)
 
 Execution requirements:
 1) Make the smallest safe change that satisfies the request.
