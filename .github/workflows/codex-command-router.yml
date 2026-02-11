@@ -3,6 +3,8 @@ name: Codex Command Router
 on:
   issue_comment:
     types: [created]
+  issues:
+    types: [opened]
 
 permissions:
   contents: write
@@ -11,9 +13,9 @@ permissions:
   actions: write
 
 jobs:
-  route:
+  route_issue_comment:
     # Only route commands from issue comments (not PR comments).
-    if: github.event.issue.pull_request == null
+    if: github.event_name == 'issue_comment' && github.event.issue.pull_request == null
     runs-on: ubuntu-latest
 
     steps:
@@ -121,3 +123,79 @@ jobs:
       - name: Reject unauthorized commenter
         if: steps.auth.outputs.authorized == 'false'
         run: echo "Ignoring command from unauthorized commenter"
+
+  route_issue_opened:
+    if: github.event_name == 'issues' && github.event.action == 'opened'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Authorize single operator
+        id: auth
+        env:
+          ASSOCIATION: ${{ github.event.issue.author_association }}
+          AUTHOR: ${{ github.event.issue.user.login }}
+          ALLOWED_OPERATOR: ${{ vars.ALLOWED_OPERATOR }}
+        run: |
+          trusted_association=false
+          case "$ASSOCIATION" in
+            OWNER|MEMBER|COLLABORATOR)
+              trusted_association=true
+              ;;
+          esac
+
+          if [ "$AUTHOR" = "$ALLOWED_OPERATOR" ] && [ "$trusted_association" = "true" ]; then
+            echo "authorized=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "authorized=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Dispatch change request for new issue
+        if: steps.auth.outputs.authorized == 'true'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ github.token }}
+          script: |
+            const issue = context.payload.issue;
+
+            await github.rest.repos.createDispatchEvent({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              event_type: 'codex_change_requested',
+              client_payload: {
+                source: 'issue_opened',
+                issue_number: issue.number,
+                issue_title: issue.title,
+                issue_url: issue.html_url,
+                requested_by: issue.user.login,
+                request: `${issue.title}\n\n${issue.body || ''}`
+              }
+            });
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue.number,
+              body: [
+                '✅ Issue received for Codex automation.',
+                '',
+                'I dispatched a `codex_change_requested` repository event using this issue title/body.'
+              ].join('\n')
+            });
+
+      - name: Explain authorization requirement
+        if: steps.auth.outputs.authorized == 'false'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ github.token }}
+          script: |
+            const issue = context.payload.issue;
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue.number,
+              body: [
+                'ℹ️ This repo only auto-routes issues from the configured operator account.',
+                '',
+                'If you are the operator, verify `ALLOWED_OPERATOR` repository variable matches your GitHub username.'
+              ].join('\n')
+            });
