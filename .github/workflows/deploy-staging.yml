@@ -52,10 +52,14 @@ jobs:
           fi
           npm run build --if-present
 
-      - name: Deploy to staging
+      - name: Deploy to staging (Vercel)
         env:
-          STAGING_DEPLOY_TOKEN: ${{ secrets.STAGING_DEPLOY_TOKEN }}
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID_STAGING }}
         run: |
-          # Replace with your deploy command, for example:
-          # npx vercel deploy --prebuilt --token "$STAGING_DEPLOY_TOKEN"
-          echo "Deploy staging placeholder"
+          npm i -g vercel@latest
+          vercel pull --yes --environment=preview --token="$VERCEL_TOKEN"
+          vercel build --token="$VERCEL_TOKEN"
+          vercel deploy --prebuilt --token="$VERCEL_TOKEN"
+
