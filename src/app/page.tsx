@@ -274,6 +274,12 @@ export default function Home() {
                 That keeps this site current without a big manual workflow.
               </p>
               <p>
+                The workflow is simple: I open an issue describing the update,
+                Codex prepares a PR, and I approve it. That means I can keep
+                this site up to date just by filing issues and reviewing PRs,
+                even from my phone.
+              </p>
+              <p>
                 You can explore the full history and open issues in the
                 repository:
               </p>
