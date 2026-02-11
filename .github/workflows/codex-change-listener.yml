@@ -119,7 +119,6 @@ jobs:
           git checkout -b "${{ steps.branch.outputs.branch }}"
 
           codex exec \
-            --provider openai \
             --skip-git-repo-check \
             --full-auto \
             --model gpt-5.2-codex \
