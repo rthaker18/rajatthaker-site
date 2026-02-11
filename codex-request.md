@@ -6,14 +6,14 @@ Goal:
 Request metadata:
 - Source: issue_opened
 - Requested by: rthaker18
-- Issue: #17
-- Issue URL: https://github.com/rthaker18/rajatthaker-site/issues/17
-- Issue title: Change Title
+- Issue: #19
+- Issue URL: https://github.com/rthaker18/rajatthaker-site/issues/19
+- Issue title: Change Front a page
 
 Requested change:
-Change Title
+Change Front a page
 
-/change change title to "Rajat Thaker's Website"
+/change the whole front page to remove the template provided by next js and instead replace it with a header "Welcome to Rajat Thaker's website!" and a hyperlink under that to my linkedin like: [LinkedIn](https://linkedin.com/in/rthaker2)
 
 Execution requirements:
 1) Make the smallest safe change that satisfies the request.
