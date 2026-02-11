@@ -113,9 +113,9 @@ jobs:
         with:
           openai-api-key: ${{ secrets.OPENAI_API_KEY }}
           prompt-file: codex-request.md
-          codex-args: '["--full-auto","--skip-git-repo-check"]'
           model: gpt-5.2-codex
           sandbox: workspace-write
+          allow-bots: true
       - name: Run lint
         run: |
           if [ -f package.json ]; then
