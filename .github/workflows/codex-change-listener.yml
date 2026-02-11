@@ -83,36 +83,15 @@ jobs:
           5) Leave repository in a clean state with only intended changes.
           PROMPT
 
-      - name: Validate OpenAI credentials
+      - name: Run Codex to implement request
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
           if [ -z "$OPENAI_API_KEY" ]; then
-            echo "OPENAI_API_KEY is not configured. Add it in Settings -> Secrets and variables -> Actions."
+            echo "OPENAI_API_KEY is not configured."
             exit 1
           fi
 
-          if ! printf '%s' "$OPENAI_API_KEY" | grep -qE '^sk-'; then
-            echo "OPENAI_API_KEY does not appear to be a valid OpenAI key (expected to start with sk-)."
-            exit 1
-          fi
-
-          status=$(curl -sS -o /tmp/openai-models-check.json -w '%{http_code}' \
-            -H "Authorization: Bearer $OPENAI_API_KEY" \
-            https://api.openai.com/v1/models)
-
-          if [ "$status" -ne 200 ]; then
-            echo "OpenAI credential preflight failed with status $status"
-            cat /tmp/openai-models-check.json || true
-            exit 1
-          fi
-
-      - name: Run Codex to implement request
-        env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          OPENAI_TOKEN: ${{ secrets.OPENAI_API_KEY }}
-          OPENAI_KEY: ${{ secrets.OPENAI_API_KEY }}
-        run: |
           npm install -g @openai/codex
 
           git checkout -b "${{ steps.branch.outputs.branch }}"
