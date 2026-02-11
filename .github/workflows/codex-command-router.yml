@@ -1,0 +1,86 @@
+name: Codex Command Router
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: read
+  issues: read
+  pull-requests: read
+  actions: write
+
+jobs:
+  route:
+    # Only route commands from issue comments (not PR comments).
+    if: github.event.issue.pull_request == null
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Authorize single operator
+        id: auth
+        env:
+          ASSOCIATION: ${{ github.event.comment.author_association }}
+          COMMENTER: ${{ github.event.comment.user.login }}
+          ALLOWED_OPERATOR: ${{ vars.ALLOWED_OPERATOR }}
+        run: |
+          trusted_association=false
+          case "$ASSOCIATION" in
+            OWNER|MEMBER|COLLABORATOR)
+              trusted_association=true
+              ;;
+          esac
+
+          if [ "$COMMENTER" = "$ALLOWED_OPERATOR" ] && [ "$trusted_association" = "true" ]; then
+            echo "authorized=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "authorized=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Parse command
+        id: parse
+        if: steps.auth.outputs.authorized == 'true'
+        env:
+          BODY: ${{ github.event.comment.body }}
+        run: |
+          if echo "$BODY" | grep -q '^/deploy prod'; then
+            echo "command=deploy_prod" >> "$GITHUB_OUTPUT"
+          elif echo "$BODY" | grep -q '^/change'; then
+            echo "command=change" >> "$GITHUB_OUTPUT"
+          else
+            echo "command=none" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Handle /change
+        if: steps.auth.outputs.authorized == 'true' && steps.parse.outputs.command == 'change'
+        run: |
+          cat <<'MSG'
+          Placeholder for Codex integration:
+          - Parse issue comment details
+          - Call your Codex automation service
+          - Service creates branch/commit/PR
+          MSG
+
+      - name: Handle /deploy prod
+        if: steps.auth.outputs.authorized == 'true' && steps.parse.outputs.command == 'deploy_prod'
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ github.token }}
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'deploy-prod.yml',
+              ref: context.ref.replace('refs/heads/', ''),
+              inputs: {
+                source_ref: 'main'
+              }
+            });
+
+      - name: Ignore unknown commands
+        if: steps.auth.outputs.authorized == 'true' && steps.parse.outputs.command == 'none'
+        run: echo "No recognized command"
+
+      - name: Reject unauthorized commenter
+        if: steps.auth.outputs.authorized == 'false'
+        run: echo "Ignoring command from unauthorized commenter"

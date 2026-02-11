@@ -1,0 +1,66 @@
+name: Deploy Production
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_ref:
+        description: 'Git ref to deploy (main, prod, or tag)'
+        required: true
+        default: 'main'
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://www.example.com
+
+    steps:
+      - name: Checkout selected ref
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.source_ref }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies (auto-detect)
+        run: |
+          if [ ! -f package.json ]; then
+            echo "No package.json found; skipping Node dependency install."
+            exit 0
+          fi
+
+          if [ -f pnpm-lock.yaml ]; then
+            corepack enable
+            pnpm install --frozen-lockfile
+          elif [ -f yarn.lock ]; then
+            corepack enable
+            yarn install --frozen-lockfile
+          elif [ -f package-lock.json ] || [ -f npm-shrinkwrap.json ]; then
+            npm ci
+          else
+            echo "No npm lockfile found; running npm install instead of npm ci."
+            npm install
+          fi
+
+      - name: Build
+        run: |
+          if [ ! -f package.json ]; then
+            echo "No package.json found; skipping build."
+            exit 0
+          fi
+          npm run build --if-present
+
+      - name: Deploy to production
+        env:
+          PROD_DEPLOY_TOKEN: ${{ secrets.PROD_DEPLOY_TOKEN }}
+        run: |
+          # Replace with your deploy command, for example:
+          # npx vercel deploy --prebuilt --prod --token "$PROD_DEPLOY_TOKEN"
+          echo "Deploy production placeholder"

@@ -1,0 +1,61 @@
+name: Deploy Staging
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: staging
+      url: https://staging.example.com
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies (auto-detect)
+        run: |
+          if [ ! -f package.json ]; then
+            echo "No package.json found; skipping Node dependency install."
+            exit 0
+          fi
+
+          if [ -f pnpm-lock.yaml ]; then
+            corepack enable
+            pnpm install --frozen-lockfile
+          elif [ -f yarn.lock ]; then
+            corepack enable
+            yarn install --frozen-lockfile
+          elif [ -f package-lock.json ] || [ -f npm-shrinkwrap.json ]; then
+            npm ci
+          else
+            echo "No npm lockfile found; running npm install instead of npm ci."
+            npm install
+          fi
+
+      - name: Build
+        run: |
+          if [ ! -f package.json ]; then
+            echo "No package.json found; skipping build."
+            exit 0
+          fi
+          npm run build --if-present
+
+      - name: Deploy to staging
+        env:
+          STAGING_DEPLOY_TOKEN: ${{ secrets.STAGING_DEPLOY_TOKEN }}
+        run: |
+          # Replace with your deploy command, for example:
+          # npx vercel deploy --prebuilt --token "$STAGING_DEPLOY_TOKEN"
+          echo "Deploy staging placeholder"
