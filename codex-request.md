@@ -6,14 +6,14 @@ Goal:
 Request metadata:
 - Source: issue_opened
 - Requested by: rthaker18
-- Issue: #28
-- Issue URL: https://github.com/rthaker18/rajatthaker-site/issues/28
-- Issue title: Update how it works
+- Issue: #30
+- Issue URL: https://github.com/rthaker18/rajatthaker-site/issues/30
+- Issue title: Contact me
 
 Requested change:
-Update how it works
+Contact me
 
-Elaborate on the how it works tab. Mention how this process makes it so I can update the website simply by adding issues and approving PRs (even just through my phone)
+Can you add a form to the website underneath the main tile where you collect the sender's name, contact info, and a small box that allows the user to send a message to me in the form of an email? use the same style as the rest of the website and add it underneath the Home/Resume/How it works tile in a separate box
 
 Execution requirements:
 1) Make the smallest safe change that satisfies the request.
