@@ -52,6 +52,19 @@ export default function Home() {
                 Thanks for stopping by. I&apos;m Rajat, and this page is a
                 lightweight spot to share what I&apos;m working on.
               </p>
+              <section className="rounded-2xl border border-slate-200 bg-slate-50/60 p-6">
+                <h2 className="text-xl font-semibold text-slate-900">
+                  Ephemeral websites
+                </h2>
+                <p className="mt-3 text-sm text-slate-700">
+                  LLMs make it possible to generate dynamic content at a scale
+                  and personalization level we have never seen before. In this
+                  model, a website can be effectively ephemeral: it might not
+                  exist until the moment you interact with it, and it can be
+                  assembled on the fly for your exact intent, context, and
+                  preferences.
+                </p>
+              </section>
               <a
                 href="https://linkedin.com/in/rthaker2"
                 className="inline-flex items-center gap-2 rounded-full border border-blue-200 px-4 py-2 text-sm font-semibold text-blue-700 transition hover:border-blue-300 hover:text-blue-800"
