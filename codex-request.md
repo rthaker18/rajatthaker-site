@@ -6,14 +6,14 @@ Goal:
 Request metadata:
 - Source: issue_opened
 - Requested by: rthaker18
-- Issue: #30
-- Issue URL: https://github.com/rthaker18/rajatthaker-site/issues/30
-- Issue title: Contact me
+- Issue: #34
+- Issue URL: https://github.com/rthaker18/rajatthaker-site/issues/34
+- Issue title: Ephemeral Websites Correction
 
 Requested change:
-Contact me
+Ephemeral Websites Correction
 
-Can you add a form to the website underneath the main tile where you collect the sender's name, contact info, and a small box that allows the user to send a message to me in the form of an email? use the same style as the rest of the website and add it underneath the Home/Resume/How it works tile in a separate box
+Write a new section called "Ephemeral websites" under the "How it works" tab and talk about how LLMs can be used to create dynamic content on a level never seen before where a website could theoretically never exist till the user interact with it. Mention how the function of this website is a stepping stone to that design as it allows the author (me) to dynamically interact with the content without actually interacting with the code.
 
 Execution requirements:
 1) Make the smallest safe change that satisfies the request.
