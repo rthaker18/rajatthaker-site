@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 
 const tabs = ["Home", "Resume", "How it Works"] as const;
@@ -44,6 +45,12 @@ export default function Home() {
                 </button>
               );
             })}
+            <Link
+              href="/workouts"
+              className="rounded-full px-4 py-2 text-sm font-semibold transition bg-slate-100 text-slate-600 hover:bg-slate-200"
+            >
+              Workouts
+            </Link>
           </div>
 
           {activeTab === "Home" ? (
