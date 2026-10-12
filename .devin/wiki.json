@@ -1,0 +1,13 @@
+{
+  "repo_notes": [
+    {
+      "content": "Personal site built with Next.js App Router and TypeScript, deployed on Vercel. The AV Safety page visualizes NHTSA Standing General Order crash data, produced by a build-time pipeline in scripts/ that writes JSON to src/data/."
+    }
+  ],
+  "pages": [
+    { "title": "Overview", "purpose": "What the site is, how it's built and deployed" },
+    { "title": "Routes and Pages", "purpose": "Every route under src/app and what it renders" },
+    { "title": "AV Safety Data Pipeline", "purpose": "How NHTSA SGO data is downloaded, cleaned, deduped, and written to src/data" },
+    { "title": "CI and Scheduled Jobs", "purpose": "GitHub Actions workflows and what triggers them" }
+  ]
+}
