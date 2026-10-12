@@ -29,7 +29,7 @@ export default function InjurySeverity({ data }: { data: { severity: string; cou
           </PieChart>
         </ResponsiveContainer>
       </div>
-      <ul className="w-full space-y-1 text-sm">
+      <ul className="w-full max-w-md space-y-1 text-sm">
         {data.map((d) => (
           <li key={d.severity} className="flex items-center gap-2">
             <span
