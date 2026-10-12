@@ -8,13 +8,15 @@
     "start": "next start",
     "lint": "eslint",
     "test": "tsx --test $(find src -name '*.test.ts')",
-    "sync:workouts": "tsx --env-file-if-exists=.env.local scripts/sync-workouts.ts"
+    "sync:workouts": "tsx --env-file-if-exists=.env.local scripts/sync-workouts.ts",
+    "sync:av-safety": "tsx --env-file-if-exists=.env.local scripts/build-av-data.ts"
   },
   "dependencies": {
     "@vercel/blob": "^2.8.1",
     "next": "16.4.0",
     "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "react-dom": "19.2.3",
+    "recharts": "^3.10.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
