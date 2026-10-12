@@ -1,14 +1,13 @@
 import Link from "next/link";
 import { getWorkoutDb } from "@/lib/workouts/db";
-import { todayIso } from "@/lib/workouts/date";
+import { SITE_TIME_ZONE, todayIso } from "@/lib/workouts/date";
+import { PHASES, computeWorkoutStats } from "@/lib/workouts/stats";
 import type { WorkoutDb } from "@/lib/workouts/types";
 import WorkoutGrid from "./workout-grid";
 
 export const dynamic = "force-dynamic";
 
 export const metadata = { title: "Workouts — Rajat Thaker" };
-
-const PHASES = ["Base", "Build", "Peak", "Sharpen", "Taper & Race"];
 
 function WeeklyMiles({ perWeek }: { perWeek: { week: number; miles: number }[] }) {
   const max = Math.max(...perWeek.map((w) => w.miles), 1);
@@ -51,63 +50,18 @@ export default async function WorkoutsPage() {
     );
   }
 
-  // Never show future-dated rows (defense-in-depth; sync already drops them)
-  const rows = db.rows.filter((r) => r.date <= todayIso());
-
-  const today = new Date(todayIso() + "T00:00:00");
-  const raceDate = new Date(db.race.date + "T00:00:00");
-  const daysToRace = Math.ceil(
-    (raceDate.getTime() - today.getTime()) / 86_400_000
-  );
-
-  const trained = rows.filter(
-    (r) => (r.done ?? 0) > 0 && r.category !== "rest"
-  );
-  const miles = rows.reduce((s, r) => s + (r.distanceMi ?? 0), 0);
-  const minutes = rows.reduce((s, r) => s + (r.durationMin ?? 0), 0);
-
-  // streak: consecutive days ending at the latest row with done > 0 (rest counts as done)
-  let streak = 0;
-  const byDate = new Map(rows.map((r) => [r.date, r]));
-  const dates = rows.map((r) => r.date).sort();
-  const latest = dates[dates.length - 1];
-  if (latest) {
-    const d = new Date(latest + "T00:00:00");
-    for (;;) {
-      const key = d.toISOString().slice(0, 10);
-      const row = byDate.get(key);
-      if (!row || (row.done ?? 0) <= 0) break;
-      streak++;
-      d.setDate(d.getDate() - 1);
-    }
-  }
-
-  const currentRow = rows[rows.length - 1];
-
-  const milesByWeek = new Map<number, number>();
-  for (const r of rows) {
-    if (r.week == null || r.distanceMi == null) continue;
-    milesByWeek.set(r.week, (milesByWeek.get(r.week) ?? 0) + r.distanceMi);
-  }
-  const perWeek = [...milesByWeek.entries()]
-    .sort((a, b) => a[0] - b[0])
-    .map(([week, miles]) => ({ week, miles }));
-
-  const scheduled = rows.filter(
-    (r) => r.category !== "rest" && r.done != null
-  );
-  const completion =
-    scheduled.length > 0
-      ? Math.round(
-          (scheduled.reduce((s, r) => s + (r.done ?? 0), 0) / scheduled.length) *
-            100
-        )
-      : 0;
-
-  const currentPhase = currentRow?.phase;
-  const phaseIdx = PHASES.findIndex((p) =>
-    (currentPhase ?? "").toLowerCase().includes(p.toLowerCase().split(" ")[0])
-  );
+  const {
+    rows,
+    daysToRace,
+    trainedCount,
+    miles,
+    minutes,
+    streak,
+    perWeek,
+    scheduledCount,
+    completion,
+    phaseIdx,
+  } = computeWorkoutStats(db.rows, db.race.date, todayIso());
 
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100">
@@ -135,12 +89,14 @@ export default async function WorkoutsPage() {
           )}
         </h1>
         <p className="mt-2 text-sm text-zinc-400">
-          {db.race.date} · last sync {new Date(db.updatedAt).toLocaleDateString()}
+          {db.race.date} · last sync {new Date(db.updatedAt).toLocaleDateString("en-US", {
+            timeZone: SITE_TIME_ZONE,
+          })}
         </p>
       </section>
 
       <section className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
-        <StatTile label="Workouts done" value={String(trained.length)} />
+        <StatTile label="Workouts done" value={String(trainedCount)} />
         <StatTile label="Miles logged" value={miles.toFixed(1)} />
         <StatTile label="Hours trained" value={(minutes / 60).toFixed(1)} />
         <StatTile label="Day streak" value={String(streak)} />
@@ -151,7 +107,7 @@ export default async function WorkoutsPage() {
           <div className="flex items-baseline justify-between">
             <h2 className="text-sm font-semibold text-zinc-200">Completion</h2>
             <span className="text-xs text-zinc-500">
-              {scheduled.length} scheduled sessions
+              {scheduledCount} scheduled sessions
             </span>
           </div>
           <div className="mt-3 h-2 overflow-hidden rounded-full bg-zinc-800">
