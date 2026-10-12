@@ -27,5 +27,5 @@ export interface WorkoutDb {
   race: { name: string; date: string }; // ISO date
   rows: WorkoutRow[];
   weeks: WeekTarget[];
-  badges: Record<string, string>; // slug -> public blob url
+  badges: Record<string, string>; // category -> public blob url
 }
